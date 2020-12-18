@@ -1,23 +1,27 @@
 module.exports = (sequelize, DataTypes) => {
-    const Menu = sequelize.define('menu', {
-        name: {
+    const Order = sequelize.define('order', {
+        menu_id: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        description: {
+        item: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        roast: {
+        serving_size: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        price: {
+        quantity: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        options: {
             type: DataTypes.INTEGER,
         },
-        calories: {
+        customer_id: {
             type: DataTypes.INTEGER,
         },
     })
-    return Menu;
+    return Order;
 }
