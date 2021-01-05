@@ -1,33 +1,20 @@
 require('dotenv').config();
-
-/* EXPRESS SETUP */
-let express = require('express');
-let app = express();
-
-/* SEQUELIZE SETUP */
-let sequelize = require('.db')
-
-/* CONTROLLER ACCESS */
-let menu = require('./controllers/menucontroller');
-let user = require('./controllers/usercontroller');
-
-/* SEQUELIZE SYNC TO DATABASE */
-sequelize.sync();
-//DROP TABLE sequelize.sync({force: true})
-
-/* MIDDLEWARE */
-app.use(require('./middleware/header'));
-
-/* EXPRESS JSON */
+const express = require("express")
+const db = require('./db');
+const app = express();
+app.use(require('./middleware/headers'));
+const controllers = require("./controllers");
 app.use(express.json());
+app.use('/user', controllers.usercontroller)
+app.use('/menu', controllers.menucontroller)
+app.use('/order', controllers.ordercontroller)
 
-/* USER CONTROLLER ENDPOINT SETUP */
-app.use('/user', user);
-
-/* MENU ENDPOINT SETUP */
-app.use('/menu', menu)
-
-/* SERVER SETUP */
-app.listen(4000, function() {
-    console.log('App is listening on port 4000.')
-})
+db.authenticate()
+    .then(() => db.sync()) // => {force: true} inside sync to drop table, then remove to create table again
+    .then(() => {
+        app.listen(process.env.PORT, () => console.log(`[Server:] App is listening on Port ${process.env.PORT}`));
+    })
+    .catch((err) => {
+        console.log('[Server: ] Server Crashed');
+        console.error(err);
+    })
